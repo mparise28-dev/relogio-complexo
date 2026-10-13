@@ -1,0 +1,47 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Inter:wght@400;500;600;700;800&display=swap');
+
+:root {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  color: #e6edf5;
+  background: #0a0f18;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+
+  --bg: #0a0f18;
+  --card: #0f1622;
+  --card-2: #121b29;
+  --borda: #1c2637;
+  --borda-forte: #26344a;
+  --texto: #e6edf5;
+  --texto-2: #7e8ea3;
+  --texto-3: #55647a;
+  --verde: #63e6ce;
+  --verde-2: #4ec9b3;
+  --vermelho: #ff647c;
+  --ambar: #f4bc68;
+  --roxo: #a78bfa;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--texto);
+}
+
+button,
+input {
+  font: inherit;
+}

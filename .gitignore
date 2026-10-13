@@ -1,0 +1,114 @@
+# ============================================================
+# RELÓGIO COMPLEXO — .gitignore raiz
+# ============================================================
+
+# ---------- Ambiente / Sistema Operacional ----------
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+
+# ---------- IDEs ----------
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# ============================================================
+# BACKEND (Python)
+# ============================================================
+
+# Byte-compiled / cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Ambientes virtuais
+.venv/
+venv/
+env/
+ENV/
+
+# Distribuição / build
+build/
+dist/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Testes / cobertura
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.nox/
+.cache
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Variáveis de ambiente
+.env
+.env.local
+.env.*.local
+
+# ============================================================
+# FRONTEND (Node / React / Vite)
+# ============================================================
+
+# Dependências
+node_modules/
+jspm_packages/
+.pnp
+.pnp.js
+
+# Build
+dist/
+dist-ssr/
+build/
+*.local
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Cache de ferramentas
+.npm
+.eslintcache
+.stylelintcache
+*.tsbuildinfo
+.cache/
+.parcel-cache/
+
+# Variáveis de ambiente
+.env
+.env.development.local
+.env.test.local
+.env.production.local
+.env.local
+
+# ============================================================
+# TESTES / COBERTURA (frontend)
+# ============================================================
+coverage/
+.nyc_output/
+
+# ============================================================
+# DEPLOY / PLATAFORMAS
+# ============================================================
+.vercel
+.netlify
+
+# ============================================================
+# OUTROS
+# ============================================================
+*.pem
+.cursorrules
+.aider*
