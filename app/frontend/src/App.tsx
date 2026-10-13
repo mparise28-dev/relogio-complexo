@@ -537,7 +537,7 @@ function App() {
           <div className="coluna">
             <span className="rotulo-pequeno">2 · FATOR DE ROTAÇÃO</span>
             <strong className="formula-grande">
-              z = c·(cos θ + i·sen θ)
+              z = r·(cos θ + i·sen θ)
             </strong>
             <span className="formula-desc">
               Demonstra relações no plano de Argand-Gauss.
