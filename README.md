@@ -26,7 +26,7 @@ Projeto desenvolvido para a disciplina de **Matemática para Computação** — 
 O **Relógio Complexo** resolve o clássico problema de representar um relógio analógico usando **números complexos**. Em vez de calcular ângulos e projetar em coordenadas cartesianas manualmente, o sistema:
 
 1. Parte do ponto inicial `z₀ = i` (todo ponteiro começa apontando para as 12h);
-2. Aplica o **fator de rotação** `cos θ + i·sen θ` (fórmula de Euler);
+2. Aplica a fórmula de Euler como **fator de rotação** `cos θ + i·sen θ`;
 3. Multiplica pelo comprimento do ponteiro, obtendo `z = x + yi`;
 4. Usa as partes real (`x`) e imaginária (`y`) para desenhar a ponta do ponteiro no mostrador.
 
@@ -111,12 +111,12 @@ O sistema é orquestrado com **Docker Compose**, que sobe dois containers — ba
 
 ## 🧰 Stack técnica
 
-| Camada | Tecnologias |
-| --- | --- |
-| **Backend** | Python 3.11+, FastAPI, Uvicorn, Pydantic |
-| **Frontend** | React 19, TypeScript, Vite, oxlint |
-| **DevOps** | Docker, Docker Compose, Nginx (proxy reverso) |
-| **Ambiente** | Node.js 22+, npm, Docker Desktop |
+| Camada             | Tecnologias                                   |
+| ------------------ | --------------------------------------------- |
+| **Backend**  | Python 3.11+, FastAPI, Uvicorn, Pydantic      |
+| **Frontend** | React 19, TypeScript, Vite, oxlint            |
+| **DevOps**   | Docker, Docker Compose, Nginx (proxy reverso) |
+| **Ambiente** | Node.js 22+, npm, Docker Desktop              |
 
 ### Por que essas escolhas?
 
@@ -248,9 +248,9 @@ Calcula a posição dos três ponteiros para o horário informado.
 
 **Parâmetros:**
 
-| Nome | Tipo | Obrigatório | Padrão | Descrição |
-| --- | --- | --- | --- | --- |
-| `horario` | string | Não | `10:10:30` | Horário no formato `HH:MM:SS` |
+| Nome        | Tipo   | Obrigatório | Padrão      | Descrição                      |
+| ----------- | ------ | ------------ | ------------ | -------------------------------- |
+| `horario` | string | Não         | `10:10:30` | Horário no formato `HH:MM:SS` |
 
 **Resposta (200):**
 
@@ -274,8 +274,8 @@ Calcula a posição dos três ponteiros para o horário informado.
 
 **Erros:**
 
-| Status | Quando |
-| --- | --- |
+| Status  | Quando                                               |
+| ------- | ---------------------------------------------------- |
 | `400` | Horário em formato inválido (não é `HH:MM:SS`) |
 
 ---
@@ -332,7 +332,7 @@ relogio-complexo/
 
 ### Por que o cálculo está no backend e não no front?
 
-A ideia é **separar domínio de apresentação**. Os números complexos são a **regra de negócio** do projeto — quem sabe calcular `z = c·(cos θ + i·sen θ)` é o Python. O React só **consome e desenha**. Isso deixa o código mais testável e permite reutilizar o mesmo cálculo em outros clientes (CLI, mobile, etc.).
+A ideia é **separar domínio de apresentação**. Os números complexos são a **regra de negócio** do projeto — quem sabe calcular `z = r·(cos θ + i·sen θ)` é o Python. O React só **consome e desenha**. Isso deixa o código mais testável e permite reutilizar o mesmo cálculo em outros clientes (CLI, mobile, etc.).
 
 ### Por que o alarme é controlado no frontend?
 
@@ -367,14 +367,14 @@ Isso reduz o tamanho final de **~500MB** (se usasse só Node) para **~25MB** (Ng
 
 ## 🗺️ Roadmap
 
-- [x] Cálculo de ângulos e coordenadas via API
-- [x] Desenho analógico com números complexos
-- [x] Ajuste de hora inicial
-- [x] Sincronização com horário de Brasília
-- [x] Alarme com luz e som
-- [x] Laboratório matemático exibindo a operação
-- [x] **Dockerização completa** (backend, frontend, compose)
-- [x] **Nginx como proxy reverso e servidor de estáticos**
+- [X] Cálculo de ângulos e coordenadas via API
+- [X] Desenho analógico com números complexos
+- [X] Ajuste de hora inicial
+- [X] Sincronização com horário de Brasília
+- [X] Alarme com luz e som
+- [X] Laboratório matemático exibindo a operação
+- [X] **Dockerização completa** (backend, frontend, compose)
+- [X] **Nginx como proxy reverso e servidor de estáticos**
 - [ ] Testes automatizados no frontend (Vitest + Testing Library)
 - [ ] Deploy público (Vercel + Render)
 - [ ] Suporte a múltiplos fusos horários
@@ -384,10 +384,10 @@ Isso reduz o tamanho final de **~500MB** (se usasse só Node) para **~25MB** (Ng
 
 ## 👥 Equipe
 
-| Nome | Responsabilidade |
-| --- | --- |
+| Nome                                       | Responsabilidade                                                                         |
+| ------------------------------------------ | ---------------------------------------------------------------------------------------- |
 | **Marcello Parise Campbell Fonseca** | Frontend e Backend (React + TypeScript e Python + FastAPI), integração com API, Docker |
-| **Gustavo Koiti Yoshimura** | Backend (Python + FastAPI), matemática dos números complexos |
+| **Gustavo Koiti Yoshimura**          | Backend (Python + FastAPI), matemática dos números complexos                           |
 
 **Instituição:** FATEC Jacareí — Desenvolvimento de Software Multiplataforma
 **Disciplina:** Matemática para Computação
