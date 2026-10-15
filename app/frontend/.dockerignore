@@ -1,0 +1,12 @@
+node_modules/
+dist/
+.vite/
+*.log
+npm-debug.log*
+.env
+.env.*
+.git/
+.gitignore
+README.md
+.oxlintrc.json
+tsconfig.tsbuildinfo

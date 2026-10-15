@@ -1,0 +1,28 @@
+services:
+  backend:
+    build:
+      context: ./app/backend
+      dockerfile: Dockerfile
+    container_name: relogio-backend
+    restart: unless-stopped
+    ports:
+      - "8000:8000"    # opcional, pra debug direto
+    networks:
+      - relogio-net
+
+  frontend:
+    build:
+      context: ./app/frontend
+      dockerfile: Dockerfile
+    container_name: relogio-frontend
+    restart: unless-stopped
+    ports:
+      - "5173:80"      # host 5173 → container 80 (Nginx)
+    depends_on:
+      - backend
+    networks:
+      - relogio-net
+
+networks:
+  relogio-net:
+    driver: bridge

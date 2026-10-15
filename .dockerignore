@@ -1,0 +1,15 @@
+.git/
+.gitignore
+.vscode/
+.idea/
+*.md
+!README.md
+venv/
+.venv/
+env/
+node_modules/
+__pycache__/
+*.pyc
+notebooks/
+.ipynb_checkpoints/
+docs/

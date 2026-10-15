@@ -8,12 +8,14 @@ API REST em **Python + FastAPI** responsável pelos cálculos matemáticos que p
 
 - [Responsabilidade](#-responsabilidade)
 - [Stack](#-stack)
-- [Como rodar](#-como-rodar)
+- [Como rodar com Docker](#-como-rodar-com-docker)
+- [Como rodar localmente](#-como-rodar-localmente)
 - [Endpoints](#-endpoints)
 - [Modelo matemático](#-modelo-matemático)
 - [Estrutura de arquivos](#-estrutura-de-arquivos)
 - [Testes](#-testes)
 - [Convenções](#-convenções)
+- [Referências](#-referências)
 
 ---
 
@@ -35,18 +37,101 @@ Essa separação permite que o mesmo backend sirva um app React, um CLI, um mobi
 | Item | Versão | Papel |
 |---|---|---|
 | Python | 3.11+ | Linguagem |
-| FastAPI | 0.110+ | Framework HTTP |
-| Uvicorn | 0.29+ | ASGI server |
-| Pydantic | 2.x | Validação de schemas |
-| pytest | 8.x | Testes |
+| FastAPI | 0.143+ | Framework HTTP |
+| Uvicorn | 0.54+ | ASGI server |
+| Pydantic | 2.14+ | Validação de schemas |
+| python-dotenv | 1.2+ | Leitura de `.env` |
+| pytest | 8.x | Testes (dev) |
+| Docker | 24+ | Empacotamento da imagem |
+
+### Dependências instaladas
+
+O `requirements.txt` é **propositalmente enxuto** — contém só o que a API precisa pra rodar em produção:
+
+```
+fastapi==0.143.0
+uvicorn[standard]==0.54.0
+pydantic==2.14.0
+python-dotenv==1.2.4
+```
+
+Libs usadas em scripts auxiliares (matplotlib, numpy, jupyter) **não entram** aqui. Elas são ferramentas de desenvolvimento/análise e não têm relação com o runtime da API. Se um dia forem necessárias dentro do container, criamos um `requirements-dev.txt` separado.
 
 ---
 
-## 🚀 Como rodar
+## 🚀 Como rodar com Docker
+
+**Recomendado.** O container do backend roda em conjunto com o do frontend via `docker compose` na raiz do projeto.
+
+### 1. Na raiz do projeto
+
+```bash
+docker compose up -d --build
+```
+
+Isso constrói a imagem do backend (`python:3.11-slim`) e sobe o container.
+
+### 2. Acessar
+
+- **API (debug direto):** `http://localhost:8000/docs`
+- **Via proxy do frontend:** `http://localhost:5173/api/relogio`
+
+### Detalhes da imagem
+
+O `Dockerfile` do backend:
+
+```dockerfile
+FROM python:3.11-slim
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1
+
+WORKDIR /app
+
+COPY requirements.txt .
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir -r requirements.txt
+
+COPY . .
+
+EXPOSE 8000
+
+CMD ["uvicorn", "api:app", "--host", "0.0.0.0", "--port", "8000"]
+```
+
+**Pontos-chave:**
+
+- **`python:3.11-slim`** — imagem base leve (~120MB) em vez da completa (~900MB)
+- **`PYTHONUNBUFFERED=1`** — logs saem no `stdout` imediatamente, sem buffer. Essencial pra ver os logs do uvicorn em tempo real via `docker compose logs`
+- **`PYTHONDONTWRITEBYTECODE=1`** — não gera `.pyc` (o container é efêmero, não faz sentido)
+- **`COPY requirements.txt` primeiro, depois `COPY . .`** — aproveita o cache de camadas. Se você mudar só o código Python, o `pip install` não roda de novo
+- **`--host 0.0.0.0`** — **obrigatório** dentro do Docker. `127.0.0.1` faz o container recusar conexões externas, e o Nginx do frontend não consegue falar com ele
+- **`--no-cache-dir`** no pip — não guarda cache de download na imagem
+
+### `.dockerignore`
+
+Evita copiar lixo pro build:
+
+```
+__pycache__/
+*.pyc
+.venv/
+.env
+*.md
+.git/
+notebooks/
+```
+
+---
+
+## 🛠️ Como rodar localmente
+
+Se preferir rodar sem Docker (durante desenvolvimento ativo, por exemplo):
 
 ### Ambiente virtual
 
 ```bash
+cd app/backend
 python -m venv .venv
 source .venv/bin/activate       # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
@@ -63,6 +148,8 @@ uvicorn api:app --reload --host 127.0.0.1 --port 8000
 | `http://127.0.0.1:8000/` | Health check |
 | `http://127.0.0.1:8000/docs` | Swagger UI (docs interativas) |
 | `http://127.0.0.1:8000/redoc` | ReDoc (docs alternativas) |
+
+> **Nota sobre CORS:** rodando localmente, o frontend (em `localhost:5173` ou `127.0.0.1:5173`) chama a API direto, e o CORS do FastAPI precisa estar configurado pra aceitar essas origens. Rodando com Docker, o Nginx faz proxy reverso e o CORS deixa de ser necessário.
 
 ---
 
@@ -228,15 +315,21 @@ class Alarme:
 ## 📁 Estrutura de arquivos
 
 ```
-backend/
-├── api.py                             # App FastAPI, rotas
-├── matematica.py                      # Cálculos puros (ângulos, rotação)
-├── alarme.py                          # Classe Alarme (domínio)
-├── relogio.py                         # Utilitários de renderização (matplotlib)
-├── demonstracao_com_matplotlib.py     # Demo standalone (roda sem API)
-├── testes_alarme.py                   # Testes do domínio do alarme
-├── testes_matematica.py               # Testes dos cálculos
-└── requirements.txt
+app/backend/
+├── Dockerfile                          # Imagem do backend (python:3.11-slim)
+├── .dockerignore
+├── requirements.txt                    # Dependências de produção (enxuto)
+├── README.md
+│
+├── api.py                              # App FastAPI, rotas
+├── matematica.py                       # Cálculos puros (ângulos, rotação)
+├── alarme.py                           # Classe Alarme (domínio)
+├── relogio.py                          # Utilitários de renderização (matplotlib)
+├── demonstracao_complexos.py           # Demo standalone (roda sem API)
+│
+└── testes/
+    ├── testes_alarme.py
+    └── testes_matematica.py
 ```
 
 ---
@@ -270,3 +363,4 @@ Cobertura:
 - [Pydantic docs](https://docs.pydantic.dev/)
 - [Números complexos — Wikipédia](https://pt.wikipedia.org/wiki/N%C3%BAmero_complexo)
 - [Fórmula de Euler — Wikipédia](https://pt.wikipedia.org/wiki/F%C3%B3rmula_de_Euler)
+- [Docker — Get Started](https://docs.docker.com/get-started/)
