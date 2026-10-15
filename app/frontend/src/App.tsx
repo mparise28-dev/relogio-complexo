@@ -577,16 +577,16 @@ function App() {
 
                     <div className="metricas">
                       <div className="linha-metrica">
-                        <span className="rotulo">Ângulo θ</span>
+                        <span className="rotulo">θ em graus</span>
                         <span className="valor">
                           {formatarNumero(p.angulo)}°
                         </span>
                       </div>
 
                       <div className="linha-metrica">
-                        <span className="rotulo">θ em rad</span>
+                        <span className="rotulo">θ em radianos</span>
                         <span className="valor">
-                          {formatarNumero((p.angulo * Math.PI) / 180)}
+                          {formatarNumero((p.angulo * Math.PI) / 180)} rad
                         </span>
                       </div>
 
@@ -615,11 +615,11 @@ function App() {
 
                     <div className="coordenadas-caixa">
                       <div>
-                        <span className="rotulo">RE (X)</span>
+                        <span className="rotulo">Re (X)</span>
                         <span className="valor">{formatarNumero(p.x)}</span>
                       </div>
                       <div>
-                        <span className="rotulo">IM (Y)</span>
+                        <span className="rotulo">Im (Y)</span>
                         <span className="valor">{formatarNumero(p.y)}</span>
                       </div>
                     </div>
