@@ -171,7 +171,7 @@ npm run build
 npm run preview
 ```
 
-> **Nota sobre a URL da API:** rodando localmente, o frontend chama `http://127.0.0.1:8000` direto (a URL está em `src/services/api.ts`). Rodando com Docker, o Nginx faz o proxy de `/api/*`, e a URL vira relativa (`/api`), então o frontend não precisa saber onde o backend está.
+> **Nota sobre a URL da API:** o frontend usa a URL relativa `/api`. No desenvolvimento com Vite, o proxy de `vite.config.ts` encaminha `/api/*` para `http://127.0.0.1:8000`; no Docker, o Nginx encaminha para `http://backend:8000`. Assim, a aplicação usa o mesmo caminho nos dois ambientes.
 
 ---
 
@@ -198,25 +198,27 @@ app/frontend/
 ├── vite.config.ts
 ├── index.html
 ├── public/
-│   └── favicon.svg
+│   └── relogio.svg
 └── src/
-    ├── App.tsx                         # Componente principal
-    ├── App.css                         # Estilos globais do app
+    ├── App.tsx                         # Estado, efeitos e composição da tela
+    ├── App.css                         # Estilos do app
     ├── index.css                       # Reset + variáveis de tema
-    ├── main.tsx                        # Entry point
+    ├── main.tsx                        # Entry point do React
+    ├── types.ts                        # Tipos compartilhados da resposta da API
     ├── components/
-    │   ├── RelogioAnalogico.tsx        # SVG do relógio
-    │   ├── Alarme.tsx                  # Card 02 — alarme
-    │   ├── PainelMatematico.tsx        # Laboratório matemático
-    │   └── PlanoComplexo.tsx           # Plano de Argand-Gauss
+    │   ├── RelogioAnalogico.tsx        # Mostrador e ponteiros em SVG
+    │   ├── ControlesRelogio.tsx        # Controles de horário e alarme
+    │   └── PainelMatematico.tsx        # Laboratório matemático
     └── services/
         └── api.ts                      # URL base da API
 ```
 
 ### Por que essa estrutura?
 
-- **`components/`** — cada bloco visual tem seu próprio arquivo. Facilita testar, revisar e evoluir isoladamente.
-- **`services/api.ts`** — centraliza a URL base da API. Se a URL mudar, você muda em **um lugar só** (e não caça `fetch` espalhado pelo código).
+- **`App.tsx`** — mantém estado, efeitos e ações de domínio da interface e conecta os componentes.
+- **`components/`** — cada bloco visual principal fica em seu próprio arquivo, facilitando leitura e evolução.
+- **`types.ts`** — define os tipos compartilhados usados pela resposta da API e seus componentes.
+- **`services/api.ts`** — centraliza a URL base da API; o proxy de desenvolvimento fica configurado em `vite.config.ts`.
 
 ---
 
@@ -335,8 +337,7 @@ A URL base da API fica em **`src/services/api.ts`**:
 export const API_URL = import.meta.env.VITE_API_URL ?? "";
 ```
 
-**Em dev local**, define `VITE_API_URL=http://127.0.0.1:8000` no `.env.local`.
-**Com Docker**, deixa vazio (`""`) — o Nginx faz o proxy.
+Normalmente, a variável fica vazia e a aplicação usa `/api`. No dev local, o proxy do Vite encaminha essa rota para `http://127.0.0.1:8000`; no Docker, o Nginx encaminha para o serviço backend. `VITE_API_URL` pode ser definida em `.env.local` para apontar diretamente a outro endereço de API.
 
 ### Tipos (espelham o backend)
 

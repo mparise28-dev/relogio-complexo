@@ -186,15 +186,29 @@ GET /api/relogio?horario=10:10:30
   "horario": "10:10:30",
   "ponteiros": {
     "horas": {
-      "angulo": 305.8083,
-      "rotacao":      { "real":  0.5824, "imaginaria": -0.8129 },
-      "multiplicacao":{ "real":  0.8129, "imaginaria":  0.5824 },
+      "angulo": -215.25,
+      "rotacao":      { "real": -0.816642, "imaginaria":  0.577145 },
+      "multiplicacao":{ "real": -0.577145, "imaginaria": -0.816642 },
       "comprimento": 0.55,
-      "x":  0.3203,
-      "y": -0.4471
+      "x": -0.449153,
+      "y":  0.31743
     },
-    "minutos": { "...": "mesmo shape" },
-    "segundos":{ "...": "mesmo shape" }
+    "minutos": {
+      "angulo": 27.0,
+      "rotacao":      { "real":  0.891007, "imaginaria":  0.45399 },
+      "multiplicacao":{ "real": -0.45399, "imaginaria":  0.891007 },
+      "comprimento": 0.78,
+      "x":  0.694985,
+      "y":  0.354113
+    },
+    "segundos": {
+      "angulo": -90.0,
+      "rotacao":      { "real":  0.0, "imaginaria": -1.0 },
+      "multiplicacao":{ "real":  1.0, "imaginaria":  0.0 },
+      "comprimento": 0.95,
+      "x":  0.0,
+      "y": -0.95
+    }
   }
 }
 ```
@@ -259,23 +273,23 @@ Content-Type: application/json
 Dado um horário `HH:MM:SS`:
 
 ```
-θ_horas    = (HH + MM/60) · 30°
-θ_minutos  = (MM + SS/60) · 6°
-θ_segundos =  SS · 6°
+θ_horas    = 90° - (HH mod 12 + MM/60 + SS/3600) · 30°
+θ_minutos  = 90° - (MM + SS/60) · 6°
+θ_segundos = 90° - SS · 6°
 ```
 
 O fator `30°` vem de `360° / 12` (12 horas no mostrador).
-O fator `6°` vem de `360° / 60` (60 minutos/segundos no mostrador).
+O fator `6°` vem de `360° / 60` (60 minutos/segundos no mostrador). O `90°` posiciona o topo do relógio no eixo imaginário positivo. Os ângulos diminuem conforme os ponteiros avançam no sentido horário.
 
 ### Rotação complexa
 
-Cada ponteiro parte de `z₀ = i` (apontando para as 12h). Para girá-lo de `θ`:
+O ponto inicial para formar o vetor unitário é `z₀ = 1`, no eixo real positivo. Para um ângulo polar `θ`, medido a partir desse eixo, e um comprimento `c`:
 
 ```
-z = comprimento · (cos θ + i·sen θ)
+z = c · (cos θ + i·sen θ)
 ```
 
-Isso é a **fórmula de Euler** `e^(iθ) = cos θ + i·sen θ`, aplicada a um vetor de comprimento `c`.
+Isso é a **fórmula de Euler** `e^(iθ) = cos θ + i·sen θ`, aplicada a um vetor de comprimento `c`. Às 12h, `θ = 90°` e o ponteiro aponta para cima; em seguida, os ângulos decrescem no sentido horário.
 
 ### Saída
 
@@ -291,7 +305,7 @@ calcular_angulos(hora: time) -> tuple[float, float, float]
     # Retorna (θ_horas, θ_minutos, θ_segundos) em graus
 
 girar_ponto(angulo_graus: float) -> tuple[float, float]
-    # Retorna (cos θ, sen θ)
+    # Retorna (cos θ, sen θ), com θ medido do eixo real positivo
 ```
 
 ### Módulo `alarme.py`
@@ -350,7 +364,7 @@ Cobertura:
 ## 📏 Convenções
 
 - **Strings de horário** sempre em `HH:MM:SS` (24h), zero-padded.
-- **Ângulos** em graus (0–360), no sentido horário, com 0° = 12h.
+- **Ângulos** polares em graus, medidos a partir do eixo real positivo; `90°` aponta para 12h e os valores diminuem no sentido horário.
 - **Números complexos** sempre serializados como `{ real, imaginaria }` — nunca como string `"a + bi"` (a formatação é responsabilidade do cliente).
 - **Arredondamento:** ângulos em 4 casas, partes real/imaginária em 6 casas.
 - **Erros** sempre em `HTTPException` com `detail` legível em pt-BR.

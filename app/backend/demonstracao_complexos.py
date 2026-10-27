@@ -53,13 +53,13 @@ ax.plot(
 # ==========================================
 
 ponteiro_livre, = ax.plot(
-    [0, 0], [0, 1],
+    [0, 1], [0, 0],
     linewidth=3,
     color="royalblue"
 )
 
 ponto_inicial, = ax.plot(
-    [0], [1],
+    [1], [0],
     marker="o",
     linestyle="None",
     color="green",
@@ -67,7 +67,7 @@ ponto_inicial, = ax.plot(
 )
 
 ponto_final, = ax.plot(
-    [0], [1],
+    [1], [0],
     marker="o",
     markersize=9,
     linestyle="None",
@@ -202,7 +202,7 @@ def atualizar_rotacao(valor=None):
     graus = slider.val
     radianos = math.radians(graus)
 
-    z_inicial = 1j
+    z_inicial = 1 + 0j
 
     rotacao = complex(
         math.cos(radianos),
@@ -267,7 +267,7 @@ def atualizar_relogio(event=None):
         f"HORÁRIO: {horario.strftime('%H:%M:%S')}",
         "",
         "ROTAÇÃO COM NÚMEROS COMPLEXOS",
-        "Ponto inicial: z₀ = i",
+        "Ponto inicial: z₀ = 1",
     ]
 
     for nome, linha, angulo, comprimento in ponteiros:
@@ -291,7 +291,7 @@ def atualizar_relogio(event=None):
             f"--- {nome} ---",
             f"Ângulo: {angulo:.2f}°",
             f"Rotação: {formatar_complexo(rotacao)}",
-            f"z = i × r = {formatar_complexo(z_final)}",
+            f"z = 1 × r = {formatar_complexo(z_final)}",
             f"x = {x:.3f} | y = {y:.3f}",
         ])
 

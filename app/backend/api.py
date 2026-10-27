@@ -48,28 +48,7 @@ def obter_relogio(horario: str = "10:10:30"):
             detail="Horário inválido. Use HH:MM:SS."
         )
 
-    # Calcula os ângulos dos três ponteiros
-    ang_horas, ang_minutos, ang_segundos = calcular_angulos(hora)
-
-    # Define o nome, ângulo e comprimento de cada ponteiro
-    dados_ponteiros = [
-        ("horas", ang_horas, 0.55),
-        ("minutos", ang_minutos, 0.78),
-        ("segundos", ang_segundos, 0.95),
-    ]
-
-    ponteiros = {}
-
-    # Calcula as coordenadas finais de cada ponteiro
-    for nome, angulo, comprimento in dados_ponteiros:
-        x, y = girar_ponto(angulo)
-        radianos = math.radians(angulo)
-
-        # Guarda os resultados para enviar em JSON
-     
-
-
-    # Calcula os ângulos dos ponteiros.
+    # Calcula os ângulos polares dos ponteiros.
     ang_horas, ang_minutos, ang_segundos = calcular_angulos(hora)
 
     dados_ponteiros = [
@@ -104,15 +83,6 @@ def obter_relogio(horario: str = "10:10:30"):
         "horario": horario,
         "ponteiros": ponteiros,
     }
-
-
-
-    # Devolve os cálculos para quem fez a requisição
-    return {
-        "horario": horario,
-        "ponteiros": ponteiros,
-    }
-
 
 # Configura ou substitui o horário do alarme
 @app.post("/api/alarme")

@@ -25,9 +25,9 @@ Projeto desenvolvido para a disciplina de **Matemática para Computação** — 
 
 O **Relógio Complexo** resolve o clássico problema de representar um relógio analógico usando **números complexos**. Em vez de calcular ângulos e projetar em coordenadas cartesianas manualmente, o sistema:
 
-1. Parte do ponto inicial `z₀ = i` (todo ponteiro começa apontando para as 12h);
-2. Aplica a fórmula de Euler como **fator de rotação** `cos θ + i·sen θ`;
-3. Multiplica pelo comprimento do ponteiro, obtendo `z = x + yi`;
+1. Calcula o ângulo polar `θ` de cada ponteiro, medido a partir do eixo real positivo; `90°` corresponde às 12h;
+2. Aplica a fórmula de Euler ao ponto inicial `z₀ = 1`: `z = c·(cos θ + i·sen θ)`, onde `c` é o comprimento;
+3. Obtém `x = c·cos θ` e `y = c·sen θ`;
 4. Usa as partes real (`x`) e imaginária (`y`) para desenhar a ponta do ponteiro no mostrador.
 
 O sistema é dividido em **duas camadas**:
@@ -226,7 +226,7 @@ npm run dev
 
 O app estará em `http://localhost:5173`.
 
-> **Nota:** rodando sem Docker, o frontend chama a API em `http://127.0.0.1:8000` diretamente, e o CORS do backend está configurado para aceitar essa origem. Rodando com Docker, o Nginx faz o proxy e o CORS deixa de ser necessário.
+> **Nota:** rodando sem Docker, o servidor de desenvolvimento do Vite encaminha `/api` para `http://127.0.0.1:8000`. Rodando com Docker, o Nginx encaminha para o container do backend. Nos dois casos, o navegador usa a mesma origem do frontend.
 
 ---
 
@@ -259,15 +259,29 @@ Calcula a posição dos três ponteiros para o horário informado.
   "horario": "10:10:30",
   "ponteiros": {
     "horas": {
-      "angulo": 305.8083,
-      "rotacao": { "real": 0.5824, "imaginaria": -0.8129 },
-      "multiplicacao": { "real": 0.8129, "imaginaria": 0.5824 },
+      "angulo": -215.25,
+      "rotacao": { "real": -0.816642, "imaginaria": 0.577145 },
+      "multiplicacao": { "real": -0.577145, "imaginaria": -0.816642 },
       "comprimento": 0.55,
-      "x": 0.3203,
-      "y": -0.4471
+      "x": -0.449153,
+      "y": 0.31743
     },
-    "minutos": { "...": "mesmo shape" },
-    "segundos": { "...": "mesmo shape" }
+    "minutos": {
+      "angulo": 27.0,
+      "rotacao": { "real": 0.891007, "imaginaria": 0.45399 },
+      "multiplicacao": { "real": -0.45399, "imaginaria": 0.891007 },
+      "comprimento": 0.78,
+      "x": 0.694985,
+      "y": 0.354113
+    },
+    "segundos": {
+      "angulo": -90.0,
+      "rotacao": { "real": 0.0, "imaginaria": -1.0 },
+      "multiplicacao": { "real": 1.0, "imaginaria": 0.0 },
+      "comprimento": 0.95,
+      "x": 0.0,
+      "y": -0.95
+    }
   }
 }
 ```
@@ -317,10 +331,10 @@ relogio-complexo/
             ├── App.css
             ├── index.css
             ├── main.tsx
+            ├── types.ts
             ├── components/
-            │   ├── Alarme.tsx
+            │   ├── ControlesRelogio.tsx
             │   ├── PainelMatematico.tsx
-            │   ├── PlanoComplexo.tsx
             │   └── RelogioAnalogico.tsx
             └── services/
                 └── api.ts                  # URL base da API
@@ -332,7 +346,7 @@ relogio-complexo/
 
 ### Por que o cálculo está no backend e não no front?
 
-A ideia é **separar domínio de apresentação**. Os números complexos são a **regra de negócio** do projeto — quem sabe calcular `z = r·(cos θ + i·sen θ)` é o Python. O React só **consome e desenha**. Isso deixa o código mais testável e permite reutilizar o mesmo cálculo em outros clientes (CLI, mobile, etc.).
+A ideia é **separar domínio de apresentação**. Os números complexos são a **regra de negócio** do projeto — quem sabe calcular `z = c·(cos θ + i·sen θ)` é o Python. O React só **consome e desenha**. Isso deixa o código mais testável e permite reutilizar o mesmo cálculo em outros clientes (CLI, mobile, etc.).
 
 ### Por que o alarme é controlado no frontend?
 

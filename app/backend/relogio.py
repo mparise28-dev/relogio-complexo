@@ -31,7 +31,7 @@ def atualizar_relogio(ax, hora):
 
     # Desenha os numeros
     for numero in range(1, 13):
-        x, y = girar_ponto(-numero * 30)
+        x, y = girar_ponto(90 - numero * 30)
 
         ax.text(
             x * 0.85,

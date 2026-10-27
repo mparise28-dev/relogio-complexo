@@ -3,34 +3,16 @@ import math
 
 
 def girar_ponto(angulo_graus):
-    # Converte graus para radianos
     angulo = math.radians(angulo_graus)
-
-    # Ponto inicial no topo do relogio
-    z_inicial = 0 + 1j
-
-    # Cria o numero complexo que representa a rotacao
-    rotacao = complex(
-        math.cos(angulo),
-        math.sin(angulo)
-    )
-
-    # Multiplica os numeros complexos para girar o ponto
-    z_final = z_inicial * rotacao
-
-    # Devolve as coordenadas X e Y
-    return z_final.real, z_final.imag
+    z = complex(math.cos(angulo), math.sin(angulo))
+    return z.real, z.imag
 
 
 def calcular_angulos(hora):
-    # Calcula o angulo dos segundos
-    angulo_segundos = -hora.second * 6
-
-    # Calcula o angulo dos minutos
-    angulo_minutos = -(hora.minute + hora.second / 60) * 6
-
-    # Calcula o angulo das horas
-    angulo_horas = -(
+    # O ângulo polar é medido do eixo real positivo; 90° aponta para 12h.
+    angulo_segundos = 90 - hora.second * 6
+    angulo_minutos = 90 - (hora.minute + hora.second / 60) * 6
+    angulo_horas = 90 - (
         (hora.hour % 12)
         + hora.minute / 60
         + hora.second / 3600
